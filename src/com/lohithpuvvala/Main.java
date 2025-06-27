@@ -1,5 +1,6 @@
 package com.lohithpuvvala;
 
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -10,7 +11,7 @@ public class Main {
         int choice;
 
         while(true){
-            System.out.print("ln====== Notes App ======");
+            System.out.println("\n====== Notes App ======");
             System.out.println("1. Write a new Note");
             System.out.println("2. View Notes");
             System.out.println("Enter your choice: ");
@@ -41,8 +42,34 @@ public class Main {
     }
 
     private static void writeNotes() {
+        System.out.println("Enter your note (type 'END' on a new line to finish'):");
+        try(FileWriter writer = new FileWriter(FILE_NAME, true)){
+            String line;
+            while(!(line = in.nextLine()).equalsIgnoreCase("END")){
+                writer.write(line + System.lineSeparator());
+            }
+            System.out.println("Note saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving note: " + e.getMessage());
+        }
     }
 
     private static void viewNotes() {
+        System.out.println("\n--- Your Notes ---");
+        try(BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))){
+            String line;
+            boolean hasNotes = false;
+            while((line = reader.readLine()) != null){
+                System.out.println(line);
+                hasNotes = true;
+            }
+            if(!hasNotes){
+                System.out.println("No notes found.");
+            }
+        }catch (FileNotFoundException e) {
+            System.out.println("No notes files found yet.");
+        }catch (IOException e) {
+            System.out.println("Error reading notes: " + e.getMessage());
+        }
     }
 }
